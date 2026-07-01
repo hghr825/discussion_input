@@ -29,6 +29,7 @@
       color: green;
       font-weight: bold;
       min-height: 1.5em;
+      white-space: pre-wrap;
     }
     #deviceInfo {
       margin-bottom: 12px;
@@ -55,13 +56,16 @@
     const message = document.getElementById("message");
     const deviceInfo = document.getElementById("deviceInfo");
 
+    const params = new URLSearchParams(location.search);
+    const roomId = params.get("room") || "survey001";
+
     let deviceId = localStorage.getItem("deviceId");
     if (!deviceId) {
       deviceId = crypto.randomUUID();
       localStorage.setItem("deviceId", deviceId);
     }
 
-    deviceInfo.textContent = `deviceId: ${deviceId}`;
+    deviceInfo.textContent = `roomId: ${roomId}\ndeviceId: ${deviceId}`;
 
     sendButton.addEventListener("click", () => {
       const text = textInput.value.trim();
@@ -72,7 +76,14 @@
         return;
       }
 
-      message.textContent = "送信しました。";
+      const payload = {
+        roomId,
+        deviceId,
+        text,
+        createdAt: new Date().toISOString()
+      };
+
+      message.textContent = JSON.stringify(payload, null, 2);
       message.style.color = "green";
       textInput.value = "";
       textInput.focus();
