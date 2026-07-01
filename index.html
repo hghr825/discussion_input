@@ -30,10 +30,18 @@
       font-weight: bold;
       min-height: 1.5em;
     }
+    #deviceInfo {
+      margin-bottom: 12px;
+      color: #555;
+      font-size: 14px;
+      word-break: break-all;
+    }
   </style>
 </head>
 <body>
   <h1>入力ページ</h1>
+
+  <div id="deviceInfo"></div>
 
   <textarea id="textInput" placeholder="ここに入力してください"></textarea>
   <br />
@@ -45,6 +53,15 @@
     const textInput = document.getElementById("textInput");
     const sendButton = document.getElementById("sendButton");
     const message = document.getElementById("message");
+    const deviceInfo = document.getElementById("deviceInfo");
+
+    let deviceId = localStorage.getItem("deviceId");
+    if (!deviceId) {
+      deviceId = crypto.randomUUID();
+      localStorage.setItem("deviceId", deviceId);
+    }
+
+    deviceInfo.textContent = `deviceId: ${deviceId}`;
 
     sendButton.addEventListener("click", () => {
       const text = textInput.value.trim();
@@ -55,7 +72,6 @@
         return;
       }
 
-      // ここではまだ送信処理は入れず、送信できた体にする
       message.textContent = "送信しました。";
       message.style.color = "green";
       textInput.value = "";
